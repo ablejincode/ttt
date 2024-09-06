@@ -5,20 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>onflouTest_4</title>
     <style>
-
+        :root{
+            --font-size : 18px;
+        }
+        #test4{
+            width: 100%;            
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .buttons{
+            font-size: var(--font-size);
+            width: calc(var(--font-size) * 3 * 3);
+            padding-top: calc(var(--font-size) / 1.5);
+            padding-bottom: calc(var(--font-size) / 1.5);
+            background-color: dodgerblue;
+            border-radius: calc(var(--font-size) / 1.5);
+            cursor: pointer;
+        }
+        .buttons:active{
+            border: inset;
+        }
+        .buttons:disabled{
+            border: inset;
+            cursor: default;
+        }
+        .boxes{
+            margin-bottom: calc(var(--font-size) * 2);            
+        }
+        #buttonCor{
+            margin-right: calc(var(--font-size) * 2);            
+        }
     </style>
 </head>
 <body>
     <!-- js, css 파일을 따로 분리하지 않고 하나의 html 파일에 모아 작성하였습니다. -->
     <!-- 
         Q4. 타이머 구현
+        startQuestionTimer() 스크립트 구현
         console.log 로 결과 표현
+
+        
     -->
         <div id="test4">
-            
+            <div id="upBox" class="boxes">
+                <span>타이머</span>
+                <span id="timestamp">00 : 00</span>
+            </div>
+            <div id="middleBox" class="boxes">
+                <button type="button" id="buttonCor" class="buttons">정답</button>
+                <button type="button" id="buttonWro" class="buttons">오답</button>
+            </div>
+            <div id="bottomBox" class="boxes">
+                <button type="button" id="buttonStar" class="buttons">start</button>
+            </div>
         </div>
     <script>
+        const intervalTime = 300;
+        const firstLimit = 10;
+        const secondLimit = 5;
+        let intervals = null;
+        let isOn = false;
+        let isGame = false;
+        let button_correct = document.getElementById('buttonCor');
+        let button_wrong = document.getElementById('buttonWro');
+        let button_start = document.getElementById('buttonStar');
+        let timeLeft = 0;
+        document.addEventListener('DOMContentLoaded',function(){
+            timeLeft = firstLimit * 1000 + intervalTime;
+        })
+        button_start.addEventListener('click',function(){
+            if(!isOn){
+                startGame();
+            }
+        })
 
+        button_wrong.addEventListener('click',function(){
+            if(isOn){
+                endGame(0)
+            }
+        })
+
+        button_correct.addEventListener('click',function(){
+            if(isOn){
+                endGame(1)
+            }
+        })
+
+        function startGame(){
+            if(isGame){
+                timeLeft = secondLimit * 1000 + intervalTime;                
+            }
+            button_start.setAttribute("disabled",true)
+            isOn = true;
+            isGame= true;
+            startQuestionTimer(()=>{                
+                document.getElementById('timestamp').innerText = "00 : 00";
+                endGame(2);
+            },timeLeft)
+        }
+        function endGame(option){
+            switch(option){
+                case 0 :
+                    console.log("틀렸습니다!")
+                    break;
+                case 1 :
+                    console.log("정답 입니다.")
+                    break;
+                case 2 :
+                    console.log("타임오버!")
+                    break;
+            }
+            clearInterval(intervals);
+            intervals=null;
+            button_start.removeAttribute("disabled")
+            isOn = false;
+            let realSec = timeLeft;
+            let realMin = 0;
+            while(realSec>=60){
+                realSec-=60;
+                realMin++;
+                if(realMin>100){
+                    realMin=99
+                }
+            }
+            button_start.innerText = "restart";
+            let text = `${realMin>=10?realMin:"0"+realMin} : ${Math.floor(realSec)>=10?Math.floor(realSec):"0"+Math.floor(realSec)}`
+            document.getElementById('timestamp').innerText=text;
+        }
+        function startQuestionTimer(callback, leftTime){
+            let realSec = leftTime / 1000;
+            let realMin = 0;
+            while(realSec>=60){
+                realSec-=60;
+                realMin++;
+                if(realMin>100){
+                    realMin=99
+                }
+            }
+                let text = `${realMin>=10?realMin:"0"+realMin} : ${Math.floor(realSec)>=10?Math.floor(realSec):"0"+Math.floor(realSec)}`
+                document.getElementById('timestamp').innerText=text;
+            let spentTime = 0;
+            intervals = setInterval(()=>{
+                spentTime += intervalTime / 1000;
+                let tempTime = realSec - spentTime;
+                if(tempTime <=0 && realMin > 0){
+                    realMin --;
+                    tempTime += 60;
+                    realSec = tempTime;
+                }else if(tempTime <=0 && realMin == 0){                
+                    callback();
+                    tempTime = 0;
+                }
+                
+                timeLeft = tempTime;
+                text = `${realMin>=10?realMin:"0"+realMin} : ${Math.floor(tempTime)>=10?Math.floor(tempTime):"0"+Math.floor(tempTime)}`
+                document.getElementById('timestamp').innerText=text;
+            },intervalTime)
+
+        }
     </script>
 </body>
 </html>

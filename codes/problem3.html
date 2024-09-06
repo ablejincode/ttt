@@ -158,7 +158,8 @@
         Q3. 카드게임
             4 x 4 격자 8종류 사진
             
-            canvas 대신 div 구조로 만들어보았습니다.
+            #canvas 대신 div 구조로 만들어보았습니다. 
+            #좀더 자연스러운 게임시작을 위해 로딩중 박스를 씌웠습니다.
     
     -->
 
@@ -234,15 +235,14 @@
             </div>
         </div>
     <script>
-        let imgList = ['0110','0210','0310','0400','0500','0600','0700','0800'];
+        const imgList = ['0110','0210','0310','0400','0500','0600','0700','0800'];
         let realList = [];
         let allCards = document.querySelectorAll('.card')
         let isOn = false;
-        let firstSection = true;
-        let globalTimeLimit = 300;
+        let firstSection = true;        
         let howMuchTime = 0;
         let rounds = 0;
-        let intervalTime = 300;
+        const intervalTime = 300;
         let intervals = null;
         let oneFlip = null;
         let howMuchMatched = 0;
