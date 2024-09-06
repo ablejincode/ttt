@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onflouTest_3</title>
+    <style>
+        .num0{
+            background-image: url('./0110.gif');
+        }
+        .num1{
+            background-image: url('./0210.gif');
+        }
+        .num2{
+            background-image: url('./0310.gif');
+        }
+        .num3{
+            background-image: url('./0400.gif');
+        }
+        .num4{
+            background-image: url('./0500.gif');
+        }
+        .num5{
+            background-image: url('./0600.gif');
+        }
+        .num6{
+            background-image: url('./0700.gif');
+        }
+        .num7{
+            background-image: url('./0800.gif');
+        }
+
+        #test3{
+            width: 100%;            
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+        }
+        #board{
+            display: grid;
+            grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);
+            gap: 12px;            
+            aspect-ratio: 1 / 1;                        
+            margin: 20px;
+            
+        }
+        #boardCover{
+            display: none;
+            transition: display 1s;            
+                        
+        }
+        #boardCover.cover{
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgb(255, 255, 255);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .cardHole{
+            border: 1px solid black;
+            aspect-ratio: 1 / 1;
+            position: relative;            
+        }
+        .cardFirst{
+            width: 100%;
+            height: 100%;
+            position: absolute;                        
+            top: 0%;
+            left: 0%;
+            background-color: #d66161;
+            z-index: 10;
+        }
+        .card{
+            width: 100%;
+            height: 100%;
+            position: absolute;                        
+            top: 0%;
+            left: 0%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .backSide{            
+            background-size: 0px 0px;
+            animation: flip-reverse 1s linear forwards;
+        }
+        .frontSide{
+            background-size: auto auto;                                   
+            animation: flip 1s linear forwards;
+        }
+        
+        @keyframes draws{
+            0%{
+                transform: rotate(-45deg);
+                top: 98%;
+                left: 98%;
+            }100%{
+                transform: rotate(0deg);
+                top: 0px;
+                left: 0px;
+            }
+
+        }
+        @keyframes flip{
+            0%{
+                transform: rotate3d(0,0,0,0deg) scaleY(1);                
+                background-color: #d66161;
+                background-size: 0px 0px;
+            }
+            90%{
+                transform: rotate3d(0,1.5,0,180deg) scaleY(1.1);                
+                background-color: #61d688;
+                background-size: auto auto;
+            }
+            100%{
+                transform: rotate3d(0,1.5,0,180deg) scaleY(1);
+                background-size: auto auto;
+                background-color: #61d688;
+                
+            }
+            
+        }
+        @keyframes flip-reverse{
+            0%{
+                transform: rotate3d(0,0,0,0deg) scaleY(1);                
+                background-color: #61d688;
+                background-size: auto auto;
+            }
+            30%{
+                background-size: 0px 0px;
+            }
+            90%{
+                transform: rotate3d(0,1.5,0,-180deg) scaleY(1.1);                
+                background-color: #d66161;
+                background-size: 0px 0px;
+            }
+            100%{
+                transform: rotate3d(0,1.5,0,-180deg) scaleY(1);
+                background-size: 0px 0px;
+                background-color: #d66161;
+                
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- js, css 파일을 따로 분리하지 않고 하나의 html 파일에 모아 작성하였습니다. -->
+    <!-- 
+        Q3. 카드게임
+            4 x 4 격자 8종류 사진
+            
+            canvas 대신 div 구조로 만들어보았습니다.
+    
+    -->
+
+        <div id="test3">
+            <div id="boardCover" class="cover">
+                로딩중
+            </div>
+            <div id="info">
+                <div>
+                    <span>걸린 시간</span>
+                    <span id="timestamp">00 : 00</span>
+                </div>
+                <div>
+                    <span>회차</span>
+                    <span id="gamestamp"></span>
+                </div>
+            </div>
+            <div id="board">
+                
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                <div class="cardHole">
+                    <div class="card backSide"></div>
+                </div>
+                
+                
+            </div>
+            <div id="buttons">
+                <button type="button" id="gamebutton">start</button>
+            </div>
+        </div>
+    <script>
+        let imgList = ['0110','0210','0310','0400','0500','0600','0700','0800'];
+        let realList = [];
+        let allCards = document.querySelectorAll('.card')
+        let isOn = false;
+        let firstSection = true;
+        let globalTimeLimit = 300;
+        let howMuchTime = 0;
+        let rounds = 0;
+        let intervalTime = 300;
+        let intervals = null;
+        let oneFlip = null;
+        let howMuchMatched = 0;
+        let isFlipping = false;
+
+        document.addEventListener('DOMContentLoaded',function(){
+            realList.push(...imgList);
+            realList.push(...imgList);
+            realList = shuffleArray(realList);
+            drawCard(realList);            
+        })
+        document.getElementById("gamebutton").addEventListener('click',function(){
+            if(!isOn){
+                if(rounds>0){
+                    realList = shuffleArray(realList);  
+                    drawCard(realList);
+                }
+                document.getElementById("gamebutton").setAttribute("disabled",true);
+                gameStart()
+            }
+        })
+        document.getElementById('board').addEventListener('click',function(e){
+            
+            let target = e.target.closest('.card');
+            console.log(target)
+            if((target.classList.contains('card'))
+            &&target.classList.contains('backSide')
+            &&isOn
+            &&!firstSection
+            &&!isFlipping
+            ){
+                isFlipping= true;
+                target.classList.remove('backSide');
+                target.classList.add('frontSide');
+                if(oneFlip == null){
+                    oneFlip = target;
+                    isFlipping = false;
+                }else if(oneFlip != null 
+                        && oneFlip.getAttribute('num') == target.getAttribute('num')
+                ){
+                    howMuchMatched ++;
+                    oneFlip = null;
+                    isFlipping = false;
+                }else if(
+                    oneFlip != null 
+                    && oneFlip.getAttribute('num') != target.getAttribute('num')
+                ){
+                    setTimeout(()=>{
+                        target.classList.remove('frontSide');
+                        target.classList.add('backSide');
+                        oneFlip.classList.remove('frontSide');
+                        oneFlip.classList.add('backSide');                                                
+                        oneFlip = null;
+                        isFlipping = false;
+                    },1300)
+                    
+                }
+                if(howMuchMatched==imgList.length){
+                    gameOver();
+                }
+            }
+        })
+        function gameStart(){            
+            showAll()
+        }
+        function gameOver(){
+            document.getElementById('gamestamp').innerText = `${rounds + 1}회 진행완료`
+            clearInterval(intervals);
+            intervals=null;
+            firstSection = true;
+            isFlipping = false;
+            rounds++
+            document.getElementById('timestamp').innerText = "00 : 00";
+            howMuchTime = 0;
+            document.getElementById("gamebutton").removeAttribute("disabled")
+            isOn = false;
+        }        
+        function shuffleArray(list){
+            for(let i = imgList.length * 2 - 1; i>0; i--){
+                for(let j = imgList.length * 2 - 1; j>0; j--){
+                    let temp = list[i];
+                    let tempNum = Math.floor(Math.random() * j)
+                    list[i] = list[tempNum];
+                    list[tempNum] = temp;
+                }
+            }
+            return list;
+        }
+        function drawCard(list){
+            document.getElementById('boardCover').classList.add('cover')
+            let tempList = [...list];
+            for (let i = 0; i < allCards.length; i++){
+                let realIndex = imgList.indexOf(tempList[i])
+                allCards[i].className= "";                
+                allCards[i].classList.add('card')
+                allCards[i].classList.add('backSide')
+                allCards[i].removeAttribute("num");
+                allCards[i].setAttribute("num",realIndex);
+                allCards[i].classList.add(`num${realIndex}`);                
+            }
+            setTimeout(()=>{document.getElementById('boardCover').classList.remove('cover')},1000)
+            
+        }
+        function showAll(){
+            let i = 0;        
+                let tempInterval =null;
+                tempInterval = setInterval(()=>{                    
+                    allCards[i].classList.remove('backSide');
+                    allCards[i].classList.add('frontSide');
+                    i++
+                    if(i>=allCards.length){
+                        clearInterval(tempInterval);
+                        tempInterval = null;
+                        setTimeout(()=>{
+                    let i = allCards.length - 1;        
+                    let tempInterval2 =null;
+                    tempInterval2 = setInterval(()=>{                    
+                    allCards[i].classList.remove('frontSide');
+                    allCards[i].classList.add('backSide');
+                    i--
+                    if(i<=-1){
+                        clearInterval(tempInterval2);
+                        tempInterval2 = null;
+                    }
+                },50);
+                
+
+                firstSection = false;
+                    isOn=true;
+                    timerStart();
+                },3000)
+                    }
+                },100);
+        }
+        function timerStart(){
+            
+            intervals = setInterval(()=>{
+                howMuchTime += intervalTime;
+                let realSec = howMuchTime / 1000;
+                let realMin = 0;
+                while(realSec>=60){
+                    realMin++;
+                    realSec-=60;
+                }
+                let text = `${realMin>=10?realMin:"0"+realMin} : ${Math.floor(realSec)>=10?Math.floor(realSec):"0"+Math.floor(realSec)}`
+                document.getElementById('timestamp').innerText = text;
+                document.getElementById('gamestamp').innerText = `${rounds + 1}회 진행중`
+            },intervalTime)
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onflouTest_2</title>
+    <style>
+        :root {
+            --font-size: 18px
+        }
+
+        #test2 {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #plus{
+            position: fixed;
+            top: 5px;
+            left:5px;
+            background-color: aliceblue;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        #cards {
+            display: grid;
+            grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
+            gap: 24px;
+            width: 90%;
+            max-width: 1280px;
+            
+        }
+
+        @media (max-width : 768px) {
+            #cards {
+                grid-template-columns: minmax(150px, 1fr) minmax(150px, 1fr);
+                width: 90%;
+                min-width: 300px;
+            }
+        }
+
+        .cardBox {
+            border-radius: 10px;
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .cardBox_img {
+            aspect-ratio: 16 / 9;
+            position: relative;
+            overflow: hidden;
+        }        
+        .card_img.on {            
+            transform-origin: center;
+            transform: scale(1.2);
+            z-index: 3;
+            filter: blur(0px);
+        }
+
+        .cardBox_img>img {
+            transition: filter 0.8s, transform 1s;
+            padding: none;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            position: absolute;
+            object-fit: contain;
+            z-index: 1;
+            filter: blur(8px);
+
+        }
+
+        .cardBox_check {
+            position: absolute;
+            right: 2px;
+            bottom: 2px;
+            z-index: 4;
+        }
+
+        .cardBox_check:checked+.card_img {
+            filter: blur(0);
+        }
+
+        .cardBox_msg {
+            border-radius: 10px;
+            height: calc(var(--font-size) * 4);            
+            background-color: white;
+            font-size: var(--font-size);
+            width: 100%;            
+            white-space: normal;
+            position: relative;
+        }
+
+        .cardBox_msg_title {                                
+            white-space:nowrap;
+            overflow: hidden;            
+            text-overflow: ellipsis;
+        }
+
+        .cardBox_msg_contents {            
+            word-break: break-all;
+            line-height: 1em;
+            height: 2em;
+            overflow-y: hidden;            
+            position: relative;
+        }
+        .cardBox_msg_contents.toLong::after{
+            content: "...";
+            position: absolute;
+            bottom: 0px;
+            right: 3px;
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- js, css 파일을 따로 분리하지 않고 하나의 html 파일에 모아 작성하였습니다. -->
+    <!--
+        Q.카드 만들기
+                        
+    -->
+
+    <div id="test2">
+        <div id="plus">
+            add div
+        </div>
+        <div id="cards">            
+
+        </div>
+    </div>
+    <script>
+        let imgList = ['prb2_1.png', 'prb2_2.png', 'prb2_3.png'];
+        let titleList = ["title title title title title title title title title title title title title title title", "short title"]
+        let contentList = ["text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text", "short text"]
+        document.addEventListener('DOMContentLoaded',function(){
+            insertNewDiv(0)
+            insertNewDiv(1)
+            insertNewDiv(2)
+            insertNewDiv(0)
+            
+
+        })
+        document.addEventListener('resize',function(){
+            checkContents()
+        })
+        document.addEventListener('click',function(e){
+            if(e.target.classList.contains('card_img')&&!e.target.classList.contains('on')){
+                e.target.classList.add('on')
+                e.target.parentElement.style.overflow = 'unset';
+            }else if(e.target.classList.contains('card_img')&&e.target.classList.contains('on')){
+                e.target.classList.remove('on')
+                setTimeout(()=>{e.target.parentElement.style.overflow = 'hidden';},700);                
+            }else if(e.target.id=="plus"){
+                insertNewDiv(0)
+            }
+        })
+        function insertNewDiv(index){
+            let newDiv = document.createElement('div');
+            newDiv.className = "cardBox";
+            newDiv.innerHTML = `<div class="cardBox_img">
+                    <input type="checkbox" class="cardBox_check">
+                    <img src="./${imgList[index]}" onerror="this.src='./error.png'" class="card_img">
+                </div>
+                <div class="cardBox_msg"> 
+                    <div class="cardBox_msg_title">${index<2?titleList[0]:titleList[1]}</div> 
+                    <div class="cardBox_msg_contents">
+                        ${index<2?contentList[0]:contentList[1]}
+                    </div>
+                </div>
+            </div>  
+        `
+            document.getElementById('cards').appendChild(newDiv);
+            checkContents();
+        }
+        function checkContents(){
+            let allTitle = document.querySelectorAll('.cardBox_msg_title');
+            let allContent = document.querySelectorAll('.cardBox_msg_contents');
+            let currentWidth = document.querySelectorAll('.cardBox')[0].clientWidth;                       
+            for(let i = 0; i < allTitle.length; i++){
+                let currentFontsize = parseInt(getComputedStyle(allContent[i]).getPropertyValue('font-size'));                
+                if(allContent[i].innerText.length * currentFontsize >= currentWidth){
+                    allContent[i].classList.add('toLong')
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

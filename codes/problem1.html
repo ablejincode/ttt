@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>onflouTest_1</title>
+    <style>
+        :root{
+            --top-value : 10%;
+            --font-size : 18px
+        }
+        #test1{
+            width: calc(max(300px, 30%));
+            height: calc(100% - var(--top-value));
+            top:calc(var(--top-value) / 2);;
+            left: 50%;
+            translate: -50% 0%;
+            position: absolute;
+            background-color: rgba(255, 0, 0, 0.048);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;            
+        }
+        .dropOut{
+            border: 1px solid black;
+            width: 90%;
+            text-indent: var(--font-size);
+            padding: calc(var(--font-size) / 5);
+        }
+        #dropHead{
+            margin-bottom: 13px;
+        }
+        #dropHead::before{
+            content: "enter : open/close , tab : select, please click exact text";
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            font-size: xx-small;
+            color: #444;
+        }
+        #dropBody{
+            display: none;
+        }
+        #dropBody.on{
+            display: block;
+        }
+        .dropBody_items{
+            width: fit-content;
+            margin-top: calc(var(--font-size) / 3);
+            margin-bottom: calc(var(--font-size) / 3);
+            cursor: pointer;
+        }
+        .dropBody_items.dropBody_selected::before{
+            content: "";
+            position: absolute;
+            width: 80%;
+            height: calc(var(--font-size) + var(--font-size) / 5);            
+            background-color: rgba(0, 0, 255, 0.13);
+        }
+    </style>
+</head>
+<body>
+    <!-- js, css 파일을 따로 분리하지 않고 하나의 html 파일에 모아 작성하였습니다. -->
+    <!--
+        Q.드롭다운 기능 구현
+            pc : 마우스 기능 구현 외에도 keyboard의 tab key와 endter key를 이용하여 항목 선택 가능
+            모바일 : 동일하게 동작
+            
+    -->
+
+        <div id="test1">
+            <div id="dropHead" class="dropOut dropDown">
+                <span id="dropHead_msg" class="dropDown">
+                    drop down : 
+                </span>
+                <span id="dropHead_screen" class="dropDown">
+
+                </span>
+            </div>
+            <div id="dropBody" class="dropOut dropDown">
+                <div class="dropBody_items dropDown">item 1</div>
+                <div class="dropBody_items dropDown">item 2</div>
+                <div class="dropBody_items dropDown">item 3</div>
+                <div class="dropBody_items dropDown">item 4</div>
+            </div>
+        </div>
+    <script>
+        let dropHead = null;
+        let dropBody = null;
+        let isOn = false;
+        let firstIndex = 0;
+        document.addEventListener('DOMContentLoaded',function(){            
+            dropHead = document.getElementById('dropHead');
+            dropBody = document.getElementById('dropBody');
+            if(dropBody == null || dropHead == null){
+                alert("please hit the refresh(F5)")
+                return;
+            }else{
+                selectItem(firstIndex);            
+            }            
+            
+        })
+        // 키 인식하기
+        document.addEventListener('keydown', function(e){
+            e.preventDefault()
+            if(e.key == "Tab"){                
+                if(isOn){
+                    console.log("tab")
+                    selectItem(firstIndex+1); 
+                }
+            }else if(e.key == "Enter"){
+                if(!isOn){
+                    turnOnOff(true);
+                    isOn = true;
+                }else{
+                    turnOnOff(false);
+                    isOn = false;
+                }
+            }
+        })
+
+        // 클릭하기
+        document.addEventListener('click',function(e){
+            if(e.target.classList.contains('dropBody_items')){
+                let targetParent = e.target.parentElement;
+                let items = Array.from(targetParent.children);
+                selectItem(items.indexOf(e.target))
+            }else if(e.target.classList.contains('dropDown')){
+                turnOnOff(true);
+            }else{
+                turnOnOff(false);
+            }
+        })
+        function turnOnOff(force){                                    
+            isOn = force;
+            if(isOn){
+                dropBody.classList.add('on')
+            }else{
+                dropBody.classList.remove('on')
+            }
+            
+        }
+        function selectItem(index){
+            let items = dropBody.children
+            console.log(items)
+            let item = items[index];
+            if(item == null || items ==null){
+                alert("selection has failed!")
+                return;
+            }
+            for(let i = 0; i < items.length; i ++){
+                items[i].classList.remove("dropBody_selected");
+            }
+            item.classList.add("dropBody_selected");
+            index == items.length - 1 ? firstIndex = -1: firstIndex = index;            
+            dropHead.children[1].innerText = index + 1;
+        }
+    </script>
+</body>
+</html>
